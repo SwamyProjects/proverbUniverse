@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!-- Type of document - HTML file -->
 <html>
   <head>
     <title> Proverb of the day </title> <!-- text displayed on browser tab -->
@@ -10,9 +10,11 @@
     
     <!--Add buttons to initiate auth sequence and sign out-->
     <button id="authorize_button" style="display: none;">Authorize</button>
-    <button id="signout_button" style="display: none;">Sign Out</button>
+ 
     <pre id="content" style="white-space: pre-wrap;"></pre>
-
+    <img src= "stupidcat.gif"> <!-- source of image/gif-->
+    <button id="signout_button" style="display: none;">Sign Out</button>
+    
     <script type="text/javascript">
       // Client ID and API key from the Developer Console
       var CLIENT_ID = '688058848814-vh6abdc9obsucq045vrqg46fp9bdrmvf.apps.googleusercontent.com';
@@ -138,5 +140,5 @@ var row = range.values[randomnum];
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
   </body>
-<img src= "stupidcat.gif"> <!-- source of image/gif-->
+
 </html>
