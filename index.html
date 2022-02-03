@@ -42,16 +42,12 @@
 
       fetch( endpoint )
         .then( response => response.json() )
-        .then( data => {
-          debugger 
+        .then( data => { 
           var values = data.values
-          debugger
           values.shift() // remove the first header row
-          debugger
           var numberOfRows = values.length
           var randomRowIndex = Math.floor(Math.random() * numberOfRows)
           var selectedRow = values[randomRowIndex]
-          debugger
 
           // Print columns A and C, which correspond to indices 0 and 2.
           appendPre(`${selectedRow[0]}, ${selectedRow[2]}`)
