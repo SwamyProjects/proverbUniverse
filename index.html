@@ -1,108 +1,38 @@
 <!DOCTYPE html> <!-- Type of document - HTML file -->
 <html>
   <head>
-    <title> Proverb of the day </title> <!-- text displayed on browser tab -->
-    <meta charset="utf-8" />
-<!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
-<!-- <meta name="apple-mobile-web-app-status-bar-style" content="default"> -->
-<!-- <meta name=viewport content="width=device-width, initial-scale=1.0">. -->
-<style>
-  h1 {
-    color: burlywood;
-    font-family: system-ui;
-}
-</style>
-  </head>
-  <body>
-
-    <h1> Proverb of the day: </h1>  <!-- Text displayed on web page -->
+    <meta charset="utf-8">
     
-    <!--Add buttons to initiate auth sequence and sign out-->
-    <button id="authorize_button" style="display: none;">Authorize</button>
- 
+    <title> Proverb of the day </title> <!-- text displayed on browser tab -->
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">             <!-- Allows you to create a seperate app on ios-mobile -- icon --> 
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name=viewport content="width=device-width, initial-scale=1.0">.
+    
+    <style>
+      h1 {
+        color: burlywood;
+        font-family: system-ui;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <h1> Proverb of the day: </h1>  <!-- Text displayed on web page -->
+
     <pre id="content" style="white-space: pre-wrap;"></pre>
     <img src= "stupidcat.gif"> <!-- source of image/gif-->
-    <button id="signout_button" style="display: none;">Sign Out</button>
-    
-    <script type="text/javascript">
-      // Client ID and API key from the Developer Console
-      var CLIENT_ID = '688058848814-vh6abdc9obsucq045vrqg46fp9bdrmvf.apps.googleusercontent.com';
-      var API_KEY = 'AIzaSyDLinWXfBhA8dqjn9jE18kMa8F_C8FwCTs';
 
-      // Array of API discovery doc URLs for APIs used by the quickstart
-      var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+    <script>
+      var google_sheets_api_key = 'AIzaSyDLinWXfBhA8dqjn9jE18kMa8F_C8FwCTs'
+      var google_sheets_spreadsheet_id = '1aztaFLVdcNbF2few_bhubQLjmroqyKwZx7EMXRLh2nM'
+      var endpoint = `https://sheets.googleapis.com/v4/spreadsheets/${google_sheets_spreadsheet_id}/values/Sheet1?key=${google_sheets_api_key}`
 
-      // Authorization scopes required by the API; multiple scopes can be
-      // included, separated by spaces.
-      var SCOPES = "https://www.googleapis.com/auth/spreadsheets.readonly";
-
-      var authorizeButton = document.getElementById('authorize_button');
-      var signoutButton = document.getElementById('signout_button');
-
-      /**
-       *  On load, called to load the auth2 library and API client library.
-       */
-      function handleClientLoad() {
-        gapi.load('client:auth2', initClient);
-      }
-
-      /**
-       *  Initializes the API client library and sets up sign-in state
-       *  listeners.
-       */
-      function initClient() {
-        gapi.client.init({
-          apiKey: API_KEY,
-          clientId: CLIENT_ID,
-          discoveryDocs: DISCOVERY_DOCS,
-          scope: SCOPES
-        }).then(function () {
-          // Listen for sign-in state changes.
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
-          // Handle the initial sign-in state.
-          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-          authorizeButton.onclick = handleAuthClick;
-          signoutButton.onclick = handleSignoutClick;
-        }, function(error) {
-          appendPre(JSON.stringify(error, null, 2));
-        });
-      }
-
-      /**
-       *  Called when the signed in status changes, to update the UI
-       *  appropriately. After a sign-in, the API is called.
-       */
-      function updateSigninStatus(isSignedIn) {
-        if (isSignedIn) {
-          authorizeButton.style.display = 'none';
-          signoutButton.style.display = 'block';
-          listMajors();
-        } else {
-          authorizeButton.style.display = 'block';
-          signoutButton.style.display = 'none';
-        }
-      }
-
-      /**
-       *  Sign in the user upon button click.
-       */
-      function handleAuthClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
-      }
-
-      /**
-       *  Sign out the user upon button click.
-       */
-      function handleSignoutClick(event) {
-        gapi.auth2.getAuthInstance().signOut();
-      }
-
-      /**
-       * Append a pre element to the body containing the given message
-       * as its text node. Used to display the results of the API call.
-       *
-       * @param {string} message Text to be placed in pre element.
+      /**		
+       * Append a pre element to the body containing the given message		
+       * as its text node. Used to display the results of the API call.		
+       *		
+       * @param {string} message Text to be placed in pre element.		
        */
       function appendPre(message) {
         var pre = document.getElementById('content');
@@ -110,44 +40,23 @@
         pre.appendChild(textContent);
       }
 
-      /**
-       * Print the names and majors of students in a sample spreadsheet:
-       * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-       */
-      function listMajors() {
-        gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: '1aztaFLVdcNbF2few_bhubQLjmroqyKwZx7EMXRLh2nM',
-          range: 'Sheet1!A2:C', //Sheet1 is the tab name of sheet 
-        }).then(function(response) {
-          var range = response.result;
+      fetch( endpoint )
+        .then( response => response.json() )
+        .then( data => {
+          debugger 
+          var values = data.values
+          debugger
+          values.shift() // remove the first header row
+          debugger
+          var numberOfRows = values.length
+          var randomRowIndex = Math.floor(Math.random() * numberOfRows)
+          var selectedRow = values[randomRowIndex]
+          debugger
 
-var noofrows = range.values.length; 
-var randomnum = Math.floor(Math.random() * noofrows)
-var row = range.values[randomnum];
-              // Print columns A and C, which correspond to indices 0 and 2.
-              appendPre(row[0] + ', ' + row[2]);
-
-        //   if (range.values.length > 0) {
-        //     appendPre('Name, Source:');
-        //     for (i = 0; i < range.values.length; i++) {
-        //       var row = range.values[i];
-        //       // Print columns A and C, which correspond to indices 0 and 2.
-        //       appendPre(row[0] + ', ' + row[2]);
-        //     }
-        //   } else {
-        //     appendPre('No data found.');
-        //   }
-        }, function(response) {
-          appendPre('Error: ' + response.result.error.message);
-        });
-      }
-
-    </script>
-
-    <script async defer src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+          // Print columns A and C, which correspond to indices 0 and 2.
+          appendPre(`${selectedRow[0]}, ${selectedRow[2]}`)
+        })
+        .catch( error => appendPre(error.message) )
     </script>
   </body>
-
 </html>
